@@ -2,12 +2,12 @@ package jira
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"strconv"
-	"log"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/pkg/errors"
 )
 
@@ -29,13 +29,13 @@ func resourceIssueTypeScheme() *schema.Resource {
 			},
 			"issue_type_ids": &schema.Schema{
 				Type:     schema.TypeSet,
-				Elem:     &schema.Schema{ Type: schema.TypeString, },
+				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
 				ForceNew: true,
 			},
 			"project_ids": &schema.Schema{
 				Type:     schema.TypeSet,
-				Elem:     &schema.Schema{ Type: schema.TypeString, },
+				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
 				ForceNew: true,
 			},
@@ -48,16 +48,16 @@ func resourceIssueTypeScheme() *schema.Resource {
 }
 
 type IssueTypeSchemeItem struct {
-	IssueTypeSchemeId  string  `json:"issueTypeSchemeId"`
-	IssueTypeId        string  `json:"issueTypeId"`
+	IssueTypeSchemeId string `json:"issueTypeSchemeId"`
+	IssueTypeId       string `json:"issueTypeId"`
 }
 
 type GetIssueTypeSchemeItemsResult struct {
-	StartAt    int                    `json:"startAt"`
-	MaxResults int                    `json:"maxResults"`
-	Total      int                    `json:"total"`
-	IsLast     bool                   `json:"isLast"`
-	Values     []IssueTypeSchemeItem  `json:"values"`
+	StartAt    int                   `json:"startAt"`
+	MaxResults int                   `json:"maxResults"`
+	Total      int                   `json:"total"`
+	IsLast     bool                  `json:"isLast"`
+	Values     []IssueTypeSchemeItem `json:"values"`
 }
 
 func listIssueTypeSchemeItems(client *jira.Client, issueTypeSchemeId string, items *schema.Set) error {
@@ -70,7 +70,7 @@ func listIssueTypeSchemeItems(client *jira.Client, issueTypeSchemeId string, ite
 	resp.MaxResults = 200
 
 	for !resp.IsLast {
-		query.Set("startAt", strconv.Itoa(resp.StartAt + len(resp.Values)))
+		query.Set("startAt", strconv.Itoa(resp.StartAt+len(resp.Values)))
 		query.Set("maxResults", strconv.Itoa(resp.MaxResults))
 		query.Set("issueTypeSchemeId", issueTypeSchemeId)
 		relativeURL.RawQuery = query.Encode()
@@ -120,17 +120,17 @@ func getProjectAssociationFromScheme(client *jira.Client, schemeId string, items
 }
 
 type IssueTypeScheme struct {
-	Name                string `json:"name,omitempty" structs:"name,omitempty"`
-	Description         string `json:"description,omitempty" structs:"description,omitempty"`
-	IssueTypeIds        []string `json:"issueTypeIds,omitempty" structs:"issueTypeIds,omitempty"`
-	DefaultIssueTypeId  string `json:"defaultIssueTypeId,omitempty" structs:"defaultIssueTypeId,omitempty"`
+	Name               string   `json:"name,omitempty" structs:"name,omitempty"`
+	Description        string   `json:"description,omitempty" structs:"description,omitempty"`
+	IssueTypeIds       []string `json:"issueTypeIds,omitempty" structs:"issueTypeIds,omitempty"`
+	DefaultIssueTypeId string   `json:"defaultIssueTypeId,omitempty" structs:"defaultIssueTypeId,omitempty"`
 }
 
 type GetIssueTypeSchemeResult struct {
-	StartAt    int                       `json:"startAt"`
-	MaxResults int                       `json:"maxResults"`
-	Total      int                       `json:"total"`
-	Values     []IssueTypeScheme         `json:"values"`
+	StartAt    int               `json:"startAt"`
+	MaxResults int               `json:"maxResults"`
+	Total      int               `json:"total"`
+	Values     []IssueTypeScheme `json:"values"`
 }
 
 func resourceIssueTypeSchemeRead(d *schema.ResourceData, m interface{}) error {
@@ -238,9 +238,9 @@ func resourceIssueTypeSchemeDelete(d *schema.ResourceData, m interface{}) error 
 }
 
 type UpdateIssueTypeScheme struct {
-	Name                string `json:"name,omitempty" structs:"name,omitempty"`
-	Description         string `json:"description,omitempty" structs:"description,omitempty"`
-	DefaultIssueTypeId  string `json:"defaultIssueTypeId,omitempty" structs:"defaultIssueTypeId,omitempty"`
+	Name               string `json:"name,omitempty" structs:"name,omitempty"`
+	Description        string `json:"description,omitempty" structs:"description,omitempty"`
+	DefaultIssueTypeId string `json:"defaultIssueTypeId,omitempty" structs:"defaultIssueTypeId,omitempty"`
 }
 
 func resourceIssueTypeSchemeUpdate(d *schema.ResourceData, m interface{}) error {

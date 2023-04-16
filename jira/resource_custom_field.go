@@ -5,16 +5,16 @@ import (
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/pkg/errors"
 )
 
 // FieldRequest The struct sent to the JIRA instance to create a new Project
 type FieldRequest struct {
-	Name                string `json:"name,omitempty" structs:"name,omitempty"`
-	Description         string `json:"description,omitempty" structs:"description,omitempty"`
-	Type                string `json:"type,omitempty" structs:"type,omitempty"`
-	SearcherKey         string `json:"searcherKey,omitempty" structs:"searcherKey,omitempty"`
+	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	Description string `json:"description,omitempty" structs:"description,omitempty"`
+	Type        string `json:"type,omitempty" structs:"type,omitempty"`
+	SearcherKey string `json:"searcherKey,omitempty" structs:"searcherKey,omitempty"`
 }
 
 // resourceCustomField is used to define a JIRA custom field
@@ -83,10 +83,10 @@ func resourceCustomFieldCreate(d *schema.ResourceData, m interface{}) error {
 	config := m.(*Config)
 
 	field := &FieldRequest{
-		Name:                d.Get("name").(string),
-		Description:         d.Get("description").(string),
-		Type:                d.Get("type").(string),
-		SearcherKey:         d.Get("searcher_key").(string),
+		Name:        d.Get("name").(string),
+		Description: d.Get("description").(string),
+		Type:        d.Get("type").(string),
+		SearcherKey: d.Get("searcher_key").(string),
 	}
 
 	returnedField := new(jira.Field)
